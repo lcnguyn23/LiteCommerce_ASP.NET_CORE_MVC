@@ -1,0 +1,70 @@
+﻿@model SV20T1080003.DomainModels.Employee
+@{
+    ViewBag.Title = "Xóa nhân viên";
+}
+
+<div class="box box-danger">
+    <div class="box box-body">
+        <form class="form-horizontal" action="~/Admin/Employee/Delete/@Model.EmployeeID" method="post">
+            <div class="form-group">
+                <label class="control-label col-sm-2">Họ và tên:</label>
+                <div class="col-sm-10">
+                    <p class="form-control">@Model.FullName</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Ngày sinh:</label>
+                <div class="col-sm-10">
+                    <p class="form-control">@Model.BirthDate.ToString("MM/dd/yyyy")</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Địa chỉ:</label>
+                <div class="col-sm-10">
+                    <p class="form-control">@Model.Address</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Điện thoại:</label>
+                <div class="col-sm-10">
+                    <p class="form-control">@Model.Phone</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Email:</label>
+                <div class="col-sm-10">
+                    <p class="form-control">@Model.Email</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Trạng thái:</label>
+                <div class="col-sm-10">
+                    @if (Model.IsWorking) {
+                        <p class="form-control">Đang làm việc</p>
+                    }
+                    else
+                    {
+                        <p class="form-control">Không làm việc</p>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Ảnh cá nhân:</label>
+                <div class="col-sm-1">
+                    <img class="profile-user-img img-responsive img-square" style="height: 200px; width: 200px; max-width: 200px" src="~/images/employees/@Model.Photo">
+                </div>
+            </div>
+
+            
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Xóa nhân viên</button>
+                    <a href="~/Admin/Employee" class="btn btn-default">Quay lại</a>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>

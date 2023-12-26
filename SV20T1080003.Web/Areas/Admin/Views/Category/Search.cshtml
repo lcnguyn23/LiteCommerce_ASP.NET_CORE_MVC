@@ -1,0 +1,106 @@
+﻿@model SV20T1080003.Web.Models.PaginationSearchCategory
+@{
+    Layout = null;
+}
+<!-- Danh sách loại hàng -->
+<p style="padding: 10px 0 10px 5px">
+    Có <strong>@string.Format("{0,-10:N0}", Model.RowCount) </strong> loại hàng.
+    Hiện đang ở trang số <strong>@string.Format("{0,-10:N0}", Model.Page)</strong> trên tổng số <strong>@string.Format("{0,-10:N0}", Model.PageCount)</strong> trang.
+</p>
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-warning">
+        <p>@ViewBag.ErrorMessage</p>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr class="bg-primary">
+                <th>Tên loại hàng</th>
+                <th>Mô tả</th>
+                <th style="width: 80px"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>@item.CategoryName</td>
+                    <td>@item.Description</td>
+                    <td class="text-right">
+                        <a href="~/Admin/Category/Edit/@item.CategoryID" class="btn btn-xs btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="~/Admin/Category/Delete/@item.CategoryID" class="btn btn-xs btn-danger">
+                            <i class="fa fa-remove"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+@{
+    int startPage = Math.Max(Model.Page - 2, 1);
+    int endPage = Math.Min(Model.Page + 2, Model.PageCount);
+    if (Model.PageCount < 6)
+    {
+        startPage = 1;
+        endPage = Model.PageCount;
+    }
+    else
+    {
+        if (startPage == 1)
+        {
+            endPage = startPage + 4;
+        }
+        else if (endPage == Model.PageCount)
+        {
+            startPage = endPage - 4;
+        }
+    }
+}
+
+@if (Model.PageCount > 1)
+{
+    <div class="text-center">
+        <ul class="pagination">
+            @if (Model.Page > 1)
+            {
+                <li><a href="javascript:;" onclick="doSearch(1, '@Model.SearchValue')"><i class="fa fa-angle-double-left"></a></li>
+                <li><a href="javascript:;" onclick="doSearch(@(Model.Page - 1), '@Model.SearchValue')"><i class="fa fa-angle-left"></a></li>
+                if (Model.Page > 3)
+                {
+                    <li><a href="#" style="pointer-events: none">...</a></li>
+                }
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                if (i == Model.Page)
+                {
+
+                    <li class="active"><a href="javascript:;">@i</a></li>
+                }
+                else
+                {
+                    <li><a href="javascript:;" onclick="doSearch(@i, '@Model.SearchValue')">@i</a></li>
+                }
+            }
+
+            @if (Model.Page < Model.PageCount)
+            {
+                if (Model.Page < Model.PageCount - 2)
+                {
+                    <li><a href="#" style="pointer-events: none">...</a></li>
+                }
+                <li><a href="javascript:;" onclick="doSearch(@(Model.Page + 1), '@Model.SearchValue')"><i class="fa fa-angle-right"></a></li>
+                <li><a href="javascript:;" onclick="doSearch(@Model.PageCount, '@Model.SearchValue')"><i class="fa fa-angle-double-right"></a></li>
+            }
+        </ul>
+    </div>
+}
+</div>

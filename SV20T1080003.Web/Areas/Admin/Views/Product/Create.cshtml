@@ -1,0 +1,226 @@
+﻿@using SV20T1080003.Web;
+@using SV20T1080003.Web.AppCodes;
+@model SV20T1080003.DomainModels.ProductDetail
+@{
+
+}
+
+<div class="box box-primary">
+
+    <div class="box-header with-border ">
+        <h3 class="box-title">Thông tin mặt hàng</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-warning">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
+        }
+    </div>
+
+    <div class="box-body">
+        <form class="form-horizontal" action="~/Admin/Product/Save" method="post" enctype="multipart/form-data">
+            @Html.HiddenFor(m => m.Product.ProductId)
+            <div class="form-group">
+                <label class="control-label col-sm-2">Tên mặt hàng:</label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(m => m.Product.ProductName, new {@class="form-control", @autofocus="autofocus"})
+                    @Html.ValidationMessageFor(m => m.Product.ProductName, "", new {@style="color:red"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Mô tả:</label>
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(m => m.Product.ProductDescription, new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Product.ProductDescription, "", new {@style="color:red"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Loại hàng:</label>
+                <div class="col-sm-10">
+                    @Html.DropDownListFor(m => m.Product.CategoryId, SelectListHelper.Categories(), new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Product.CategoryId, "", new {@style="color:red"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Nhà cung cấp:</label>
+                <div class="col-sm-10">
+                    @Html.DropDownListFor(m => m.Product.SupplierId, SelectListHelper.Suppliers(), new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Product.SupplierId, "", new {@style="color:red"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Đơn vị tính:</label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(m => m.Product.Unit, new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Product.Unit, "", new {@style="color:red"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Giá hàng:</label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(m => m.Product.Price, new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Product.Price, "", new {@style="color:red"})
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(m => m.Product.IsSelling)
+                        Hiện đang được bán
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Ảnh minh họa:</label>
+                <div class="col-sm-10">
+                    @Html.HiddenFor(m => m.Product.Photo)
+                    <input type="file" class="form-control" name="uploadPhoto" accept="image/*"
+                           onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-sm-10">
+                    <img src="~/images/products/@Model.Product.Photo" class="img img-bordered" style="width:200px" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Lưu dữ liệu
+                    </button>
+                    <a class="btn btn-warning" href="~/Admin/Product">
+                        Quay lại
+                    </a>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+@if (@ViewBag.Title == "Cập nhật mặt hàng")
+{
+    <div class="box box-info">
+        <div class="box-header with-border ">
+            <h3 class="box-title">Thư viện ảnh</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr class="bg-gray">
+                        <th>Ảnh</th>
+                        <th>Mô tả/tiêu đề</th>
+                        <th>Thứ tự hiển thị</th>
+                        <th>Ẩn ảnh</th>
+                        <th class="text-right">
+                            <a class="btn btn-xs btn-primary" href="~/Admin/Product/Photo/@Model.Product.ProductId?method=add">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ListPhotos != null)
+                    {
+                        @foreach (var item in Model.ListPhotos)
+                        {
+                            <tr>
+                                <td style="vertical-align:middle">
+                                    <img src="~/images/productphotos/@item.Photo" alt="" style="width:100px" />
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    @item.Description
+                                </td>
+                                <td style="vertical-align:middle;">@item.DisplayOrder</td>
+                                <td style="vertical-align:middle;">@(item.IsHidden ? "Đã bị ẩn" : "Đang hiện")</td>
+                                <td style="vertical-align:middle; text-align:right">
+                                    <a class="btn btn-xs btn-primary" href="~/Admin/Product/Photo/@Model.Product.ProductId?method=edit&photoId=@item.PhotoId">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-xs btn-danger" href="~/Admin/Product/Photo/@Model.Product.ProductId?method=delete&photoId=@item.PhotoId" onclick="return confirm('Xóa ảnh của mặt hàng hay không?')">
+                                        <i class="fa fa-remove"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="box box-info">
+
+        <div class="box-header with-border ">
+            <h3 class="box-title">Thuộc tính của mặt hàng</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr class="bg-gray">
+                        <th>Tên thuộc tính</th>
+                        <th>Giá trị thuộc tính</th>
+                        <th>Thứ tự hiển thị</th>
+                        <th class="text-right">
+                            <a class="btn btn-xs btn-primary" href="~/Admin/Product/Attribute/@Model.Product.ProductId?method=add">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ListAttributes != null)
+                    {
+                        @foreach (var item in Model.ListAttributes)
+                        {
+
+                            <tr>
+                                <td style="vertical-align:middle">@item.AttributeName</td>
+                                <td style="vertical-align:middle;">@item.AttributeValue</td>
+                                <td style="vertical-align:middle;">@item.DisplayOrder</td>
+                                <td style="vertical-align:middle; text-align:right">
+                                    <a class="btn btn-xs btn-primary" href="~/Admin/Product/Attribute/@Model.Product.ProductId?method=edit&attributeId=@item.AttributeId">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-xs btn-danger" href="~/Admin/Product/Attribute/@Model.Product.ProductId?method=delete&attributeId=@item.AttributeId" onclick="return confirm('Xóa thuộc tính này của mặt hàng?')">
+                                        <i class="fa fa-remove"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="box-footer text-center">
+        </div>
+
+    </div>
+}

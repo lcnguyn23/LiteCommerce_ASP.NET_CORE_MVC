@@ -1,0 +1,232 @@
+﻿@using SV20T1080003.Web.AppCodes
+@model IEnumerable<SV20T1080003.Web.Models.CartItem>
+@{
+    ViewBag.Title = "Lập đơn hàng";
+    int stt = 0;
+    decimal sumTotal = 0;
+    string errorMessage = ViewBag.ErrorMessage.ToString();
+    string customerID = ViewBag.CustomerID.ToString();
+    string employeeID = ViewBag.EmployeeID.ToString();
+}
+
+<div class="box box-primary">
+    <div class="box-body">
+
+        <!-- Tìm kiếm, hiển thị và chọn hàng đưa vào giỏ -->
+        <div class="col-md-4">
+            <h4>Lựa chọn hàng cần bán</h4>
+            <form id="formSearchProduct" action="~/Admin/Order/SearchProduct" method="post">
+                <div class="input-group">
+                    <input type="text" name="searchValue"
+                           class="form-control"
+                           placeholder="Nhập tên mặt hàng cần tìm">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-flat btn-info">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>
+            <div id="searchResult">
+                <!-- Danh sách mặt hàng tìm được-->
+                @*  @for (int i = 1; i <= 5; i++)
+                {
+                <form action="~/Admin/Order/AddToCart" method="post" style="background-color:#fff; border:1px solid #ccc; margin:5px 0px 5px 0px; padding:5px;">
+
+                <div class="row">
+                <div class="col-md-12">
+                <strong>Laptop HP Gaming VICTUS 16 e1105AX R5 6600H (7C0T0PA)</strong>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-sm-3">
+                <img class="img img-responsive img-bordered" src="~/Images/Products/laptop_hp.jpg">
+                </div>
+                <div class="col-sm-9">
+                <div class="form-group-sm">
+                <div class="row">
+                <div class="col-md-7">
+                <label>Giá bán:</label>
+                <input class="form-control" type="text" value="23,990,000" name="SalePrice" />
+                </div>
+                <div class="col-md-5">
+                <label>Số lượng:</label>
+                <input class="form-control" type="number" value="1" min="1" name="Quantity" />
+                </div>
+                </div>
+                </div>
+                <div class="form-group-sm" style="margin-top:2px;">
+                <button type="submit" class="btn btn-sm btn-primary">
+                <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                </button>
+                </div>
+                </div>
+                </div>
+                </form>
+                }
+
+                <ul class="pager">
+                <li class="previous"><a href="#"><i class="fa fa-backward"></i></a></li>
+                <li class="next"><a href="#"><i class="fa fa-forward"></i></a></li>
+                </ul>
+                *@
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- Giỏ hàng -->
+            <h4>Danh sách mặt hàng đã chọn</h4>
+            <div id="cartContent">
+            </div>
+
+            <div class="text-right">
+                <a href="javascript:;" onclick="clearCart()" class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash"></i> Xóa giỏ hàng
+                </a>
+            </div>
+
+            <!-- Nhập khách hàng, nhân viên phụ trách và khởi tạo đơn hàng -->
+            <form action="~/Admin/Order/Init" method="post">
+                <h4>Nhập thông tin về khách hàng và nhân viên phi trách đơn hàng</h4>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label>Khách hàng:</label>
+                        <select class="form-control" name="customerID">
+                            @foreach (var item in SelectListHelper.Customers())
+                            {
+                                if (item.Value == customerID)
+                                {
+                                    <option value="@item.Value" selected>@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Nhân viên phụ trách:</label>
+                        <select class="form-control" name="employeeID">
+                            @foreach (var item in SelectListHelper.Employees())
+                            {
+                                if (item.Value == employeeID)
+                                {
+                                    <option value="@item.Value" selected>@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12 text-right">
+                        <button type="submit" class="btn btn-sm btn-primary">Lập đơn hàng</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $("#formSearchProduct").submit(function (e) {
+                e.preventDefault();
+                doSearch(1);
+                return;
+            });
+            showCart();
+        });
+
+        function doSearch(page) {
+            var url = $("#formSearchProduct").prop("action");
+            var type = $("#formSearchProduct").prop("method");
+            var postData = $("#formSearchProduct").serializeArray();
+            postData.push({ "name": "page", "value": page });
+
+            $.ajax({
+                url: url,
+                type: type,
+                data: postData,
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $("#searchResult").html(data);
+                }
+            });
+
+            return;
+        }
+
+        function showCart() {
+            $.ajax({
+                url: "/Admin/Order/ShowCart",
+                type: "GET",
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $("#cartContent").html(data);
+                }
+            });
+        }
+
+        function addToCart(frm) {
+            var url = $(frm).prop("action");
+            var type = $(frm).prop("method");
+            var postData = $(frm).serializeArray();
+
+            $.ajax({
+                url: url,
+                type: type,
+                data: postData,
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    if (data === "") {
+                        showCart();
+                    }
+                    else {
+                        alert(data);
+                    }
+                }
+            });
+        }
+
+        function removeFromCart(id) {
+            $.ajax({
+                url: "/Admin/Order/RemoveFromCart/" + id,
+                type: "GET",
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    showCart();
+                    //Chưa check remove thành công hay chưa thành công. viết mẫu như vậy thôi.
+                }
+            });
+        }
+
+        function clearCart() {
+            $.ajax({
+                url: "/Admin/Order/ClearCart",
+                type: "GET",
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    showCart();
+                    //Chưa check clear thành công hay chưa thành công. viết mẫu như vậy thôi.
+                }
+            });
+        }
+    </script>
+}

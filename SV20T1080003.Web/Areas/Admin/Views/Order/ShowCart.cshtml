@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SV20T1080003.Web.Models.CartItem>
+
+@{
+    Layout = null;
+    int stt = 0;
+    decimal tongTien = 0;
+}
+
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr class="bg-primary">
+            <th class="text-center">STT</th>
+            <th class="text-center">Tên hàng</th>
+            <th class="text-center">ĐVT</th>
+            <th class="text-center">Số lượng</th>
+            <th class="text-center">Giá</th>
+            <th class="text-center">Thành tiền</th>
+            <th style="width:40px"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            tongTien += item.Total;
+            <tr>
+                <td class="text-center">@(++stt)</td>
+                <td>@item.ProductName</td>
+                <td class="text-center">@item.Unit</td>
+                <td class="text-center">@item.Quantity</td>
+                <td class="text-right">@string.Format("{0:N0}", item.Price)</td>
+                <td class="text-right">@string.Format("{0:N0}", item.Total)</td>
+                <td class="text-right">
+                    <a href="javascript:;" onclick="removeFromCart('@item.ProductId')" onclick="return confirm('Loại mặt hàng [@item.ProductName] khỏi giỏ hàng?')" class="btn btn-xs btn-danger">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="5" class="text-right">Tổng cộng:</th>
+            <th class="text-right">@string.Format("{0:N0}", tongTien)</th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>

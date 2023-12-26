@@ -1,0 +1,87 @@
+﻿@using SV20T1080003.Web
+@model SV20T1080003.DomainModels.Employee
+@{
+
+} 
+
+<div class="box box-primary">
+    <div class="box box-body">
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-warning">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
+        }
+        <form class="form-horizontal" action="~/Admin/Employee/Save" method="post" enctype="multipart/form-data">
+            @Html.HiddenFor(m => m.EmployeeID)
+            <div class="form-group">
+                <label class="control-label col-sm-2">Họ và tên:</label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(m => m.FullName, new {@class="form-control", @autofocus="autofocus"})
+                    @Html.ValidationMessageFor(m => m.FullName, "", new {@style="color:red"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Ngày sinh:</label>
+                <div class="col-sm-10">
+                    @Html.HiddenFor(m => m.BirthDate)
+                    <input type="text" class="form-control" name="birthday" value="@string.Format("{0:dd/MM/yyyy}", Model.BirthDate)"> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Địa chỉ:</label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(m => m.Address, new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Address, "", new {@style="color:red"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Điện thoại:</label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(m => m.Phone, new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Phone, "", new {@style="color:red"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Email:</label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(m => m.Email, new {@class="form-control"})
+                    @Html.ValidationMessageFor(m => m.Email, "", new {@style="color:red"})
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBoxFor(m => m.IsWorking)
+                            Nhân viên đang làm việc
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Ảnh cá nhân:</label>
+                <div class="col-sm-10">
+                    @Html.HiddenFor(m => m.Photo)
+                    <input type="file" class="form-control" name="uploadPhoto" accept="image/*"
+                           onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-sm-10">
+                    <img id="Photo" src="~/images/employees/@Model.Photo" class="img img-bordered" style="width:200px" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu dữ liệu</button>
+                    <a href="~/Admin/Employee" class="btn btn-default">Quay lại</a>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+﻿@model IEnumerable<SV20T1080003.DomainModels.Product>
+@{
+    Layout = null;
+    int page = 1;
+}
+
+@foreach (var item in Model)
+{
+    <form onsubmit="addToCart(this); return false;" action="~/Admin/Order/AddToCart" method="post" style="background-color:#fff; border:1px solid #ccc; margin:5px 0px 5px 0px; padding:5px;">
+        <input type="hidden" name="ProductId" value="@item.ProductId" />
+        <input type="hidden" name="ProductName" value="@item.ProductName" />
+        <input type="hidden" name="Unit" value="@item.Unit" />
+        <input type="hidden" name="Photo" value="~/Image/Products/@item.Photo" />
+
+        <div class="row">
+            <div class="col-md-12">
+                <strong>@item.ProductName</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <img class="img img-responsive img-bordered" src="~/images/products/@item.Photo">
+            </div>
+            <div class="col-sm-9">
+                <div class="form-group-sm">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <label>Giá bán:</label>
+                            <input class="form-control" type="text" value="@item.Price" name="Price" />
+                        </div>
+                        <div class="col-md-5">
+                            <label>Số lượng:</label>
+                            <input class="form-control" type="number" value="1" min="1" name="Quantity" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group-sm" style="margin-top:2px;">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+<ul class="pager">
+    <li class="previous"><a href="javascript:;" onclick="doSearch(@(page-1))"><i class="fa fa-backward"></i></a></li>
+    <li class="next"><a href="javascript:;" onclick="doSearch(@(page+1))"><i class="fa fa-forward"></i></a></li>
+</ul>
