@@ -422,7 +422,7 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
 
             HttpContext.Session.Remove(CART); //Xóa giỏ hàng 
 
-            return RedirectToAction($"Details/{orderID}");
+            return RedirectToAction("Details", new {id = orderID});
         }
     }
 }

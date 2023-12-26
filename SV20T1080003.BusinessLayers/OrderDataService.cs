@@ -62,7 +62,7 @@ namespace SV20T1080003.BusinessLayers
                 FinishedTime = null,
                 Status = OrderStatus.INIT
             };
-            return orderDB.Add(data);
+            return orderDB.Add(data, details);
         }
         /// <summary>
         /// Hủy bỏ đơn hàng

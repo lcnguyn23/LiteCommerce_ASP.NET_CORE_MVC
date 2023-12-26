@@ -10,7 +10,7 @@ namespace SV20T1080003.DataLayers
     public interface IOrderDAL
     {
         IList<Order> List(int page = 1, int pageSize = 0, string searchValue = "", int status = 0);
-        int Add(Order order);
+        int Add(Order order, IEnumerable<OrderDetail> details);
         bool Update(Order order);
         Order? GetById(int id);
         bool Delete(int orderID);

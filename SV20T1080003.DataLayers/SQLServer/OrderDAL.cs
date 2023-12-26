@@ -16,12 +16,12 @@ namespace SV20T1080003.DataLayers.SQLServer
         {
         }
 
-        public int Add(Order data)
+        public int Add(Order data, IEnumerable<OrderDetail> details)
         {
-            int id = 0;
+            int orderId = 0;
             using (var connection = OpenConnection())
             {
-                var sql = @"
+                var sqlAddOrder = @"
                                     insert into Orders(CustomerID, OrderTime, EmployeeID, AcceptTime, ShipperID, ShippedTime, FinishedTime, Status)
                                    values(@customerID, @orderTime, @employeeID, @acceptTime, @shipperID, @shippedTime,      @finishedTime, @status);
                                    select @@identity";
@@ -37,10 +37,25 @@ namespace SV20T1080003.DataLayers.SQLServer
                     finishedTime = data.FinishedTime,
                     status = data.Status,
                 };
-                id = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: CommandType.Text);
+                orderId = connection.ExecuteScalar<int>(sql: sqlAddOrder, param: parameters, commandType: CommandType.Text);
+
+                var sqlAddDetail = @"insert into OrderDetails(OrderID, ProductID, Quantity, SalePrice) 
+                                    values(@orderID, @productID, @quantity, @salePrice);";
+                foreach (var item in details)
+                {
+                    var detailParameters = new
+                    {
+                        orderID = orderId,
+                        productID = item.ProductID,
+                        quantity = item.Quantity,
+                        salePrice = item.SalePrice,
+                    };
+                    connection.Execute(sql: sqlAddDetail, param: detailParameters, commandType: CommandType.Text);
+                }    
+
                 connection.Close();
             }
-            return id;
+            return orderId;
         }
 
         public long AddOrderDetail(OrderDetail data)
