@@ -264,8 +264,22 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public IActionResult Accept(int id = 0)
         {
-            //TODO: Duyệt chấp nhận đơn hàng
-
+            if (id <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+            Order data = OrderDataService.GetOrder(id);
+            if (data == null)
+            {
+                return RedirectToAction("Index");
+            }
+            bool isAccepted = OrderDataService.AcceptOrder(id);
+            if (!isAccepted)
+            {
+                TempData[ERROR_MESSAGE] =
+                    $"Chấp nhận đơn hàng thất bại vì trạng thái đơn hàng hiện tại là: {data.StatusDescription}";
+                return RedirectToAction("Detail", data.OrderID);
+            }
             return RedirectToAction("Details", new { id = id });
         }
         /// <summary>
@@ -275,14 +289,35 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public IActionResult Shipping(int id = 0, int shipperID = 0)
         {
-            if (Request.Method == "GET")
-                return View();
-            else
+            
+            if (id < 0)
             {
-                //TODO: Chuyển đơn hàng cho người giao hàng
+                return RedirectToAction("Index");
+            }
+            if (Request.Method == "GET")
+            {
+                ViewBag.OrderID = id;
+                return View();
+            }
 
+            Order data = OrderDataService.GetOrder(id);
+            if (data == null)
+            {
+                return RedirectToAction("Index");
+            }
+            if (shipperID <= 0)
+            {
+                TempData[ERROR_MESSAGE] = "Bạn phải chọn đơn vị vận chuyển";
                 return RedirectToAction("Details", new { id = id });
             }
+            
+            bool isShipped = OrderDataService.ShipOrder(id, shipperID);
+            if (!isShipped)
+            {
+                TempData[ERROR_MESSAGE] = $"Xác nhận chuyển đơn hàng cho người giao hàng thất bại vì trạng thái đơn hàng hiện tại là: {data.StatusDescription}";
+                return RedirectToAction("Details", new { id = data.OrderID });
+            }
+            return RedirectToAction("Details", new { id = id });
         }
         /// <summary>
         /// 
@@ -291,9 +326,23 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public IActionResult Finish(int id = 0)
         {
-            //TODO: Ghi nhận hoàn tất đơn hàng
+            if (id < 0)
+            {
+                return RedirectToAction("Index");
+            }
 
-            return RedirectToAction($"Details", new { id = id });
+            Order data = OrderDataService.GetOrder(id);
+            if (data == null)
+            {
+                return RedirectToAction("Index");
+            }
+            bool isFinished = OrderDataService.FinishOrder(id);
+            if (!isFinished)
+            {
+                TempData[ERROR_MESSAGE] = $"Xác nhận hoàn tất đơn hàng thất bại vì trạng thái đơn hàng hiện tại là: {data.StatusDescription}";
+                return RedirectToAction("Details", new { id = data.OrderID });
+            }
+            return RedirectToAction("Details", new { id = id });
         }
         /// <summary>
         /// Hủy bỏ đơn hàng
@@ -302,9 +351,24 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public IActionResult Cancel(int id = 0)
         {
-            //TODO: Hủy đơn hàng
+            if (id < 0)
+            {
+                return RedirectToAction("Index");
+            }
 
-            return RedirectToAction($"Details", new { id = id });
+            Order data = OrderDataService.GetOrder(id);
+            if (data == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            bool isCanceled = OrderDataService.CancelOrder(id);
+            if (!isCanceled)
+            {
+                TempData[ERROR_MESSAGE] = $"Hủy bỏ đơn hàng thất bại vì trạng thái đơn hàng hiện tại là: {data.StatusDescription}";
+                return RedirectToAction("Details", new { id = data.OrderID });
+            }
+            return RedirectToAction("Details", new { id = id });
         }
         /// <summary>
         /// Từ chối đơn hàng
@@ -313,9 +377,24 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public IActionResult Reject(int id = 0)
         {
-            //TODO: Từ chối đơn hàng
+            if (id < 0)
+            {
+                return RedirectToAction("Index");
+            }
 
-            return RedirectToAction($"Details", new { id = id });
+            Order data = OrderDataService.GetOrder(id);
+            if (data == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            bool isRejected = OrderDataService.RejectOrder(id);
+            if (!isRejected)
+            {
+                TempData[ERROR_MESSAGE] = $"Từ chối đơn hàng thất bại vì trạng thái đơn hàng hiện tại là: {data.StatusDescription}";
+                return RedirectToAction("Details", new { id = data.OrderID });
+            }
+            return RedirectToAction("Details", new { id = id });
         }
 
         

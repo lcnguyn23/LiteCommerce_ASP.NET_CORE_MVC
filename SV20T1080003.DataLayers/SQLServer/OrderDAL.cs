@@ -51,7 +51,7 @@ namespace SV20T1080003.DataLayers.SQLServer
                         salePrice = item.SalePrice,
                     };
                     connection.Execute(sql: sqlAddDetail, param: detailParameters, commandType: CommandType.Text);
-                }    
+                }
 
                 connection.Close();
             }
@@ -300,20 +300,20 @@ namespace SV20T1080003.DataLayers.SQLServer
             using (var connection = OpenConnection())
             {
                 var sql = @"
-                            if exists (select 1 from OrderDetails where OrderID = @orderID and ProductID = @productID
-	                            begin
-		                            update OrderDetails
-		                            set Quantity = @quantity,
-			                            SalePrice = @salePrice
-		                            where OrderID = @orderID and ProductID = @productID
-	                            end
-                            else
-	                            begin
-		                            insert into OrderDetails (OrderID, ProductID, Quantity, SalePrice)
-		                            values (@orderID, @productID, @quantity, @salePrice)
-	                            end
-                            select @@ROWCOUNT as rows;
-                            ";
+                            if exists (select 1 from OrderDetails where OrderID = @orderID and ProductID = @productID)
+                                    begin
+                                        UPDATE OrderDetails
+                                        SET Quantity = @quantity,
+                                            SalePrice = @salePrice
+                                        WHERE OrderID = @orderID AND ProductID = @productID;
+                                    end
+                                    else
+                                    begin
+                                        INSERT INTO OrderDetails (OrderID, ProductID, Quantity, SalePrice)
+                                        VALUES (@orderID, @productID, @quantity, @salePrice);
+                                    end;
+
+                                    SELECT @@ROWCOUNT AS AffectedRows;";
 
                 var parameters = new
                 {

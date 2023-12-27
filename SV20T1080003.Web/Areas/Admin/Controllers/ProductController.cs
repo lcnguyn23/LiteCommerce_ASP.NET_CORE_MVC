@@ -365,7 +365,7 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public ActionResult SaveAttribute(ProductAttribute data)
+        public IActionResult SaveAttribute(ProductAttribute data)
         {
             // kiểm tra dữ liệu đầu vào
             if (string.IsNullOrWhiteSpace(data.AttributeName))
