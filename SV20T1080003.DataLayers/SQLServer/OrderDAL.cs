@@ -190,11 +190,6 @@ namespace SV20T1080003.DataLayers.SQLServer
             return data;
         }
 
-        public OrderStatus? GetOrderStatus(int orderStatusID)
-        {
-            throw new NotImplementedException();
-        }
-
         public IList<Order> List(int page = 1, int pageSize = 0, string searchValue = "", int status = 0)
         {
             List<Order> data = new List<Order>();
@@ -255,11 +250,7 @@ namespace SV20T1080003.DataLayers.SQLServer
             return data;
         }
 
-        public IList<OrderStatus> ListOrderStatus()
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public bool Update(Order data)
         {
             bool result = false;

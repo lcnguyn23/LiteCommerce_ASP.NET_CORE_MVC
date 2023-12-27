@@ -182,24 +182,24 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         {
             if (data.ProductID <= 0)
             {
-                //TempData[ERROR_MESSAGE] = "Mặt hàng không tồn tại";
+                TempData[ERROR_MESSAGE] = "Mặt hàng không tồn tại";
                 return RedirectToAction("Details", new {id = data.OrderID });
             }
             // Số lượng
             if (data.Quantity < 1)
             {
-                //TempData[ERROR_MESSAGE] = "Số lượng không hợp lệ";
+                TempData[ERROR_MESSAGE] = "Số lượng không hợp lệ";
                 return RedirectToAction("Details", new {id = data.OrderID });
             }
 
             // Đơn giá
             if (data.SalePrice < 1)
             {
-                //TempData[ERROR_MESSAGE] = "Đơn giá không hợp lệ";
+                TempData[ERROR_MESSAGE] = "Đơn giá không hợp lệ";
                 return RedirectToAction("Details", new { id = data.OrderID });
             }
 
-            // Cập nhật chi tiết 1 đơn hàng nếu kiểm tra đúng hết
+            
             OrderDataService.SaveOrderDetail(data.OrderID, data.ProductID, data.Quantity, data.SalePrice);
             return RedirectToAction("Details", new { id = data.OrderID });
         }
@@ -224,7 +224,7 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
             bool isDeleted = OrderDataService.DeleteOrderDetail(id, productID);
             if (!isDeleted)
             {
-                //TempData[ERROR_MESSAGE] = "Không thể xoá mặt hàng này";
+                TempData[ERROR_MESSAGE] = "Không thể xoá mặt hàng này";
                 return RedirectToAction("Details", new { id = id });
             }
             return RedirectToAction("Details", new { id = id });
@@ -236,8 +236,7 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
         /// <returns></returns>
         public IActionResult Delete(int id = 0)
         {
-            //TODO: Code chức năng để xóa đơn hàng (nếu được phép xóa)
-
+            
             if (id < 0)
             {
                 return RedirectToAction("Index");
@@ -462,7 +461,6 @@ namespace SV20T1080003.Web.Areas.Admin.Controllers
                 OrderDetail orderDetail = new OrderDetail
                 {
                     // Thiết lập các thông tin từ CartItem cho OrderDetail
-                    // Ví dụ:
                     ProductID = cartItem.ProductId,
                     ProductName = cartItem.ProductName,
                     Unit = cartItem.Unit,

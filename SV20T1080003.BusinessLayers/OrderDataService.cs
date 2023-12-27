@@ -21,10 +21,16 @@ namespace SV20T1080003.BusinessLayers
             orderDB = new DataLayers.SQLServer.OrderDAL(connectionString);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchValue"></param>
+        /// <returns></returns>
         public static List<Order> ListOrders(string searchValue = "")
         {
             return orderDB.List(1, 0, searchValue, 0).ToList();
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -39,6 +45,7 @@ namespace SV20T1080003.BusinessLayers
             rowCount = orderDB.Count(status, searchValue);
             return orderDB.List(page, pageSize, searchValue, status).ToList();
         }
+
         /// <summary>
         /// 
         /// </summary>

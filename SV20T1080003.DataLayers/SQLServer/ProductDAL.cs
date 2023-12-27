@@ -360,7 +360,7 @@ namespace SV20T1080003.DataLayers.SQLServer
                                     set AttributeName = @AttributeName,
                                         AttributeValue = @AttributeValue,
                                         DisplayOrder = @DisplayOrder,
-                                    where ProductID = @ProductId
+                                    where AttrubuteID = @AttributeId
                                 end";
                 var parameters = new
                 {
@@ -385,7 +385,7 @@ namespace SV20T1080003.DataLayers.SQLServer
                                         Description = @Description,
                                         DisplayOrder = @DisplayOrder,
                                         IsHidden = @IsHidden
-                                    where ProductID = @ProductId
+                                    where PhotoID = @PhotoId
                                 end";
                 var parameters = new
                 {
