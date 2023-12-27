@@ -20,6 +20,7 @@
                         <option value="-1">Đơn hàng bị hủy</option>
                         <option value="-2">Đơn hàng bị từ chối</option>
                     </select>
+
                 </div>
                 <div class="col-sm-10 input-group">
                     <input type="text" name="searchValue"
@@ -38,42 +39,42 @@
         </div>
     </div>
 </div>
- @section Scripts{
-     <script>
-         $(document).ready(function () {
-             // Submit trang -> tim kiem tu trang 1
-             $('#formSearchInput').submit(function (e) {
-                 //
-                 e.preventDefault();
-                 doSearch(1);
-                 return;
-             });
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Submit trang -> tim kiem tu trang 1
+            $('#formSearchInput').submit(function (e) {
+                //
+                e.preventDefault();
+                doSearch(1);
+                return;
+            });
 
-             doSearch(@Model.Page);
-         });
+            doSearch(@Model.Page);
+        });
 
-         function doSearch(page) {
-             var url = $("#formSearchInput").prop("action");
-             var postData = $("#formSearchInput").serializeArray();
-             postData.push(
-                 { "name": "page", "value": page },
-                 { "name": "status", "value": $('#listStatus').val() }
-             );
+        function doSearch(page) {
+            var url = $("#formSearchInput").prop("action");
+            var postData = $("#formSearchInput").serializeArray();
+            postData.push(
+                { "name": "page", "value": page },
+                { "name": "status", "value": $('#listStatus').val() }
+            );
 
-             $.ajax({
-                 url: url,
-                 type: "POST",
-                 data: postData,
-                 error: function () {
-                     alert("Your request is not valid");
-                 },
-                 success: function (data) {
-                     $("#searchResult").html(data);
-                 }
-             });
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                error: function () {
+                    alert("Your request is not valid");
+                },
+                success: function (data) {
+                    $("#searchResult").html(data);
+                }
+            });
 
 
-             return;
-         }
-     </script>
+            return;
+        }
+    </script>
  }
